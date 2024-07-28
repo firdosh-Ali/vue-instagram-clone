@@ -19,9 +19,59 @@
 
 </template>
 
-<script setup>
-import Login from '../views/Login.vue';
+<script>
+
+ import { ref, reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+import Login from './Login.vue';
+
+
+export default {
+  components: {
+    Login
+  },
+
+  setup() {
+    const router = useRouter();
+    const errorMessage = ref('');
+
+    // Function to handle logout
+    const logout = async () => {
+      try {
+        await axios.post('/api/logout');
+        // Clear client-side authentication state
+        localStorage.removeItem('authToken');
+        // Redirect to login page
+        router.push('/login');
+      } catch (error) {
+        errorMessage.value = 'Failed to log out. Please try again.';
+        console.error('Logout error:', error);
+      }
+    };
+
+    // Check authentication on component mount
+    onMounted(() => {
+
+      const token = localStorage.getItem('authToken');
+      console.log(token);
+      if (!token) {
+        // If no token is found, redirect to the login page
+        router.push('/');
+      }else{
+        router.push('/dashboard');
+
+      }
+    });
+
+    return {
+      logout,
+      errorMessage
+    };
+  }
+};
 </script>
+
 
 
 <style scoped>
@@ -53,10 +103,10 @@ import Login from '../views/Login.vue';
 }
 
 img {
-    height: 100px;
+    height: 90px;
 }
 .navbar{
-  height: 40px;
+  height: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -1,14 +1,52 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
-const email = ref('');
-const password = ref('');
+
+const form = reactive({
+   email:'',
+   password:'',
+});
+
+const errors = reactive({
+    email: '',
+    password: '',
+});
+
+const loginError = ref('');
 const router = useRouter();
 
+const validateForm = () => {
+    let isValid = true;
+
+    Object.keys(errors).forEach((key) => (errors[key]= ''));
+
+    if(!form.email){
+        errors.email = 'Email field is required';
+    isValid = false;
+    }
+    
+    if(!form.password){
+        errors.password = 'Password field is required';
+    isValid = false;
+    }
+
+    return isValid;
+};
+
+
 const login = async () => {
+    loginError.value = '';
+
+    if(!validateForm()){
+        return;
+    }
+
     try{
+        errors.value = {};
+        loginError.value = '';
+        
         const response = await axios.post('http://127.0.0.1:8000/api/login', {
             email: email.value,
             password: password.value,
@@ -21,11 +59,14 @@ const login = async () => {
         
     
     }catch(error){
-        console.error('Login failed:', error.response.data);
-    }
+if(error.response && error.response.status === 401) {
+    loginError.value = 'Invalid email or password';
+}else{
+    loginError.value = 'An error occured, please try again.';
+}
+}
 };
 </script>
-
 
 <template>
 <div class="form-container">
@@ -36,27 +77,33 @@ const login = async () => {
 
         <div class="form-group">
             <label for="email">Email: </label>
-            <input type="email" v-model="email" id="email" required placeholder="Enter Your Email">
+            <input type="email" v-model="form.email" id="email" placeholder="Enter Your Email">
+            <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
         </div>
 <br>
 
         <div class="form-group">
 
-            <label for="password">Pasword: </label>
-            <input type="password" v-model="password" id="password" required placeholder="Enter Your Password">
+            <label for="password">Password: </label>
+            <input type="password" v-model="form.password" id="password" placeholder="Enter Your Password">
+            <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
         </div>
 <br>
          <button type="submit" class="btn">Log In</button>
+<br>
+<br>
 
+<div v-if="loginError" class="error-message">
+    {{ loginError }}
+</div>
     </form>
 </div>
 
 <br>
 
-<div class="form-container">
+<div class="form-container second">
     <h3>Dont have an account ?</h3>
     <h4 class="btn2"><router-link to="/signup" style="color: white;">Sign up</router-link></h4>
-
 </div>
 <br>
 </template>
@@ -64,6 +111,20 @@ const login = async () => {
 
 
 <style scoped>
+
+.second{
+    height: 50px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+}
+
+.error-message{
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+}
 .form-container {
     max-width: 400px;
     margin: 0 auto;
@@ -104,15 +165,14 @@ input[type="password"]{
     background-color: #0056b3;
 }
 .btn2{
-    width: 60px;
+  width:66px;
   padding: 10px;
   background-color: #007bff;
-  color: white;
   border: 2px solid black;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 17px;
-  margin-left: 240px;
+  font-size: 20px;
+  margin-right: 60px ;
 
 }
 .btn2:hover{
