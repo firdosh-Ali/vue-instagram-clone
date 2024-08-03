@@ -36,13 +36,11 @@ export default {
     const router = useRouter();
     const errorMessage = ref('');
 
-    // Function to handle logout
+ 
     const logout = async () => {
       try {
         await axios.post('/api/logout');
-        // Clear client-side authentication state
         localStorage.removeItem('authToken');
-        // Redirect to login page
         router.push('/login');
       } catch (error) {
         errorMessage.value = 'Failed to log out. Please try again.';
@@ -50,13 +48,12 @@ export default {
       }
     };
 
-    // Check authentication on component mount
+
     onMounted(() => {
 
       const token = localStorage.getItem('authToken');
       console.log(token);
       if (!token) {
-        // If no token is found, redirect to the login page
         router.push('/');
       }else{
         router.push('/dashboard');
@@ -75,7 +72,6 @@ export default {
 
 
 <style scoped>
-
 .signup{
     width: 80px;
     padding: 10px;

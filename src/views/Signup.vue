@@ -128,6 +128,7 @@ const signup = async () => {
         </div>
 <br>
          <button type="submit" class="btn">Sign Up</button>
+         <a href="/" class="link">Go To Home Page.</a>
          <br>
          <br>
 
@@ -145,7 +146,9 @@ const signup = async () => {
 
 
 <style scoped>
-
+.link{
+    margin-left: 150px;
+}
 .form-container{
     max-width: 400px;
     margin: 0 auto;

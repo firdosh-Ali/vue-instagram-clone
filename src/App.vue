@@ -12,6 +12,6 @@
 
 <style>
 body{
-    background-color: antiquewhite;
+    background-color: bisque;
 }
 </style>

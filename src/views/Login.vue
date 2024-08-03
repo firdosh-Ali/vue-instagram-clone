@@ -44,16 +44,18 @@ const login = async () => {
     }
 
     try{
-        errors.value = {};
-        loginError.value = '';
+errors.email = '';
+errors.password = '';
+loginError.value = '';
         
         const response = await axios.post('http://127.0.0.1:8000/api/login', {
-            email: email.value,
-            password: password.value,
+            email: form.email,
+            password: form.password,
         });
 
         if(response.status=== 200){
             localStorage.setItem('authToken', response.data.token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
             router.push('/dashboard');
         }
         
