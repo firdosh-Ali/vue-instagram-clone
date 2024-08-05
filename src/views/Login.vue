@@ -55,7 +55,8 @@ loginError.value = '';
 
         if(response.status=== 200){
             localStorage.setItem('authToken', response.data.token);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+            console.log("tv");
+
             router.push('/dashboard');
         }
         
